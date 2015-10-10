@@ -1,0 +1,2 @@
+module IntegrationDiffRails
+end
