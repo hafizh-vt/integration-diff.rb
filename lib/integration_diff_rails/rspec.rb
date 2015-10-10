@@ -1,7 +1,7 @@
 module IntegrationDiffRails
   module RSpec
     def idiff
-      @idiff ||= IntegrationDiffRails.runner
+      @idiff ||= IntegrationDiffRails::Runner.instance
     end
   end
 end

@@ -1,4 +1,6 @@
 require 'faraday'
+require 'integration_diff_rails/runner'
+require 'integration_diff_rails/rspec'
 
 module IntegrationDiffRails
   # configure domain to which all images have to be uploaded.

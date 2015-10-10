@@ -4,7 +4,7 @@ Currently this supports only RSpec.
 
 ### Installation
 
-```
+```rb
 gem "integration-diff-rails", git: "git@github.com:code-mancers/integration-diff-rails"
 ```
 
@@ -13,7 +13,7 @@ gem "integration-diff-rails", git: "git@github.com:code-mancers/integration-diff
 Include `integration-diff-rails` in your rspec `spec_helper` and configure 3 variables
 which will be used while taking screenshots.
 
-```
+```rb
 IntegrationDiffRails.configure do |config|
   # configure domain to which all images have to be uploaded.
   config.base_uri = "http://idf.dev"
@@ -30,15 +30,15 @@ After configuration, include `IntegrationDiffRails::Rspec` in your `spec_helper`
 configure before and after suite so that suite interacts with the service.
 
 
-```
+```rb
 Rspec.configure do |config|
-  config.include IntegrationDiffRails::Rspec
+  config.include IntegrationDiffRails::RSpec
 
-  config.before(:suite)
+  config.before(:suite) do
     IntegrationDiffRails.start_run
   end
 
-  config.after(:suite)
+  config.after(:suite) do
     IntegrationDiffRails.wrap_run
   end
 end
@@ -55,7 +55,7 @@ screenshot taken from other screenshots.
 describe "Landing page" do
   it "has a big banner" do
     visit root_path
-    idiff.take_screenshot("unique-identifier")
+    idiff.take_screenshot(page, "unique-identifier")
   end
 end
 ```
