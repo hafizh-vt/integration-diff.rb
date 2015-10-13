@@ -26,13 +26,13 @@ IntegrationDiffRails.configure do |config|
 end
 ```
 
-After configuration, include `IntegrationDiffRails::Rspec` in your `spec_helper` and
+After configuration, include `IntegrationDiffRails::Dsl` in your `spec_helper` and
 configure before and after suite so that suite interacts with the service.
 
 
 ```rb
 Rspec.configure do |config|
-  config.include IntegrationDiffRails::RSpec
+  config.include IntegrationDiffRails::Dsl
 
   config.before(:suite) do
     IntegrationDiffRails.start_run

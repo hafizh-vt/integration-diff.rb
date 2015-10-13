@@ -1,5 +1,5 @@
 module IntegrationDiffRails
-  module RSpec
+  module Dsl
     def idiff
       @idiff ||= IntegrationDiffRails::Runner.instance
     end
