@@ -14,7 +14,7 @@ module IntegrationDiffRails
 
     # TODO: Improve error handling here for network timeouts
     def start_run
-      @images = []
+      @identifiers = []
       draft_run
     rescue StandardError => e
       Rails.logger.fatal e.message
@@ -23,8 +23,8 @@ module IntegrationDiffRails
 
     # TODO: Improve error handling here for network timeouts
     def wrap_run
-      @images.each do |image|
-        upload_image(image)
+      @identifiers.each do |identifier|
+        upload_image(identifier)
       end
 
       finalize_run if @run_id
@@ -34,9 +34,9 @@ module IntegrationDiffRails
     end
 
     def take_screenshot(page, identifier)
-      screenshot_name = #{identifier}.png"
+      screenshot_name = "#{identifier}.png"
       page.save_screenshot(screenshot_name, full: true)
-      @images << screenshot_name
+      @identifiers << identifier
     end
 
     private
@@ -47,11 +47,11 @@ module IntegrationDiffRails
       @run_id = JSON.parse(response.body)["id"]
     end
 
-    def upload_image(image)
-      image_file = File.new(image)
+    def upload_image(identifier)
+      image_file = File.new("#{identifier}.png")
       image_io = Faraday::UploadIO.new(image_file, 'image/png')
       connection.post("/api/v1/runs/#{@run_id}/run_images",
-                      identifier: image, image: image_io)
+                      identifier: identifier, image: image_io)
     end
 
     def finalize_run
