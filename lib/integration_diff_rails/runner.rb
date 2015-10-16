@@ -1,5 +1,7 @@
 module IntegrationDiffRails
   class Runner
+    DIR = 'tmp/idff_images'
+
     def self.instance
       @runner ||= Runner.new(IntegrationDiffRails.base_uri,
                              IntegrationDiffRails.project_name,
@@ -10,6 +12,7 @@ module IntegrationDiffRails
       @base_uri = base_uri
       @project_name = project_name
       @javscript_driver = javscript_driver
+      Dir.mkdir(DIR) unless Dir.exist?(DIR)
     end
 
     # TODO: Improve error handling here for network timeouts
@@ -34,7 +37,7 @@ module IntegrationDiffRails
     end
 
     def take_screenshot(page, identifier)
-      screenshot_name = "#{identifier}.png"
+      screenshot_name = image_file(identifier)
       page.save_screenshot(screenshot_name, full: true)
       @identifiers << identifier
     end
@@ -48,14 +51,17 @@ module IntegrationDiffRails
     end
 
     def upload_image(identifier)
-      image_file = File.new("#{identifier}.png")
-      image_io = Faraday::UploadIO.new(image_file, 'image/png')
+      image_io = Faraday::UploadIO.new(image_file(identifier), 'image/png')
       connection.post("/api/v1/runs/#{@run_id}/run_images",
                       identifier: identifier, image: image_io)
     end
 
     def finalize_run
       connection.put("/api/v1/runs/#{@run_id}/status", status: "finalized")
+    end
+
+    def image_file(identifier)
+      "#{DIR}/#{identifier}.png"
     end
 
     def connection
