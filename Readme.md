@@ -31,7 +31,7 @@ configure before and after suite so that suite interacts with the service.
 
 
 ```rb
-Rspec.configure do |config|
+RSpec.configure do |config|
   config.include IntegrationDiffRails::Dsl
 
   config.before(:suite) do
