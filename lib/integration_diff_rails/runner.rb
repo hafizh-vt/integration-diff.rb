@@ -52,7 +52,9 @@ module IntegrationDiffRails
       branch = `git rev-parse --abbrev-ref HEAD`.strip
       author = `git config user.name`.strip
 
-      response = connection.post("/api/v1/runs", name: run_name, branch: "#{branch}", author: "#{author}")
+      response = connection.post('/api/v1/runs',
+                                 name: run_name, branch: branch, author: author)
+
       @run_id = JSON.parse(response.body)["id"]
     end
 
