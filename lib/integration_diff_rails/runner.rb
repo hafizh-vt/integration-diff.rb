@@ -37,7 +37,7 @@ module IntegrationDiffRails
     end
 
     def take_screenshot(page, identifier)
-      screenshot_name = "#{DIR}/#{identifier}.png"
+      screenshot_name = image_file(identifier)
       page.save_screenshot(screenshot_name, full: true)
       @identifiers << identifier
     end
@@ -51,14 +51,17 @@ module IntegrationDiffRails
     end
 
     def upload_image(identifier)
-      image_file = File.new("#{DIR}/#{identifier}.png")
-      image_io = Faraday::UploadIO.new(image_file, 'image/png')
+      image_io = Faraday::UploadIO.new(image_file(identifier), 'image/png')
       connection.post("/api/v1/runs/#{@run_id}/run_images",
                       identifier: identifier, image: image_io)
     end
 
     def finalize_run
       connection.put("/api/v1/runs/#{@run_id}/status", status: "finalized")
+    end
+
+    def image_file(identifier)
+      "#{DIR}/#{identifier}.png"
     end
 
     def connection
