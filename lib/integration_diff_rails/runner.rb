@@ -46,6 +46,9 @@ module IntegrationDiffRails
 
     def draft_run
       run_name = @project_name + "-" + Time.current.iso8601
+
+      # will have to make it configurable. ie, read from env.
+      # https://github.com/code-mancers/integration-diff-rails/pull/4#discussion-diff-42290464
       branch = `git rev-parse --abbrev-ref HEAD`.strip
       author = `git config user.name`.strip
 
