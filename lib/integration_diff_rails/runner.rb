@@ -46,7 +46,10 @@ module IntegrationDiffRails
 
     def draft_run
       run_name = @project_name + "-" + Time.current.iso8601
-      response = connection.post("/api/v1/runs", name: run_name)
+      branch = `git rev-parse --abbrev-ref HEAD`.strip
+      author = `git config user.name`.strip
+
+      response = connection.post("/api/v1/runs", name: run_name, branch: "#{branch}", author: "#{author}")
       @run_id = JSON.parse(response.body)["id"]
     end
 
