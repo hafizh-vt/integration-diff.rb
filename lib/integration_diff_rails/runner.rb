@@ -53,7 +53,8 @@ module IntegrationDiffRails
       author = `git config user.name`.strip
 
       response = connection.post('/api/v1/runs',
-                                 name: run_name, branch: branch, author: author)
+                                 name: run_name, branch: branch, author: author,
+                                 js_driver: @javascript_driver)
 
       @run_id = JSON.parse(response.body)["id"]
     end
