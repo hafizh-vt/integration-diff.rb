@@ -8,10 +8,10 @@ module IntegrationDiffRails
                              IntegrationDiffRails.javascript_driver)
     end
 
-    def initialize(base_uri, project_name, javscript_driver)
+    def initialize(base_uri, project_name, javascript_driver)
       @base_uri = base_uri
       @project_name = project_name
-      @javscript_driver = javscript_driver
+      @javascript_driver = javascript_driver
       Dir.mkdir(DIR) unless Dir.exist?(DIR)
     end
 
