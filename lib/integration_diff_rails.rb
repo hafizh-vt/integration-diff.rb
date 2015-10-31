@@ -1,4 +1,5 @@
 require 'faraday'
+require 'integration_diff_rails/dummy_runner'
 require 'integration_diff_rails/runner'
 require 'integration_diff_rails/dsl'
 
@@ -15,6 +16,11 @@ module IntegrationDiffRails
   mattr_accessor :javascript_driver
   self.javascript_driver = "poltergeist"
 
+  # configure service to be mocked so that no screenshots are
+  # taken, and uploaded to service.
+  mattr_accessor :mock_service
+  self.mock_service = true
+
   # helper to configure above variables.
   def self.configure
     yield(self)
@@ -22,11 +28,11 @@ module IntegrationDiffRails
 
   # helps in setting up the run
   def self.start_run
-    IntegrationDiffRails::Runner.instance.start_run
+    IntegrationDiffRails::Dsl.idiff.start_run
   end
 
   # helps in wrapping up run by uploading images
   def self.wrap_run
-    IntegrationDiffRails::Runner.instance.wrap_run
+    IntegrationDiffRails::Dsl.idiff.wrap_run
   end
 end

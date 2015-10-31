@@ -10,8 +10,10 @@ gem "integration-diff-rails", git: "git@github.com:code-mancers/integration-diff
 
 ### Configuration
 
-Include `integration-diff-rails` in your rspec `spec_helper` and configure 3 variables
-which will be used while taking screenshots.
+Include `integration-diff-rails` in your rspec `spec_helper` and configure 4 variables
+which will be used while taking screenshots. Make sure that `mock_service` is set to
+to proper value, as its very important.
+
 
 ```rb
 IntegrationDiffRails.configure do |config|
@@ -23,6 +25,9 @@ IntegrationDiffRails.configure do |config|
 
   # configure js driver which is used for taking screenshots.
   config.javascript_driver = "poltergeist"
+
+  # configure service to mock capturing and uploading screenshots
+  config.mock_service = ENV["IDIFF_ENABLE"].blank?
 end
 ```
 
