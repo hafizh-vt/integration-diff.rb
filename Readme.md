@@ -55,7 +55,7 @@ screenshot taken from other screenshots.
 describe "Landing page" do
   it "has a big banner" do
     visit root_path
-    idiff.take_screenshot(page, "unique-identifier")
+    idiff.screenshot("unique-identifier")
   end
 end
 ```
