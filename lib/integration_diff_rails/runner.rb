@@ -1,5 +1,7 @@
 module IntegrationDiffRails
   class Runner
+    include Capybara::DSL
+
     DIR = 'tmp/idff_images'
 
     def self.instance
@@ -36,7 +38,7 @@ module IntegrationDiffRails
       raise e
     end
 
-    def take_screenshot(page, identifier)
+    def screenshot(identifier)
       screenshot_name = image_file(identifier)
       page.save_screenshot(screenshot_name, full: true)
       @identifiers << identifier
