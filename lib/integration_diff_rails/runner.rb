@@ -53,10 +53,11 @@ module IntegrationDiffRails
       # https://github.com/code-mancers/integration-diff-rails/pull/4#discussion-diff-42290464
       branch = `git rev-parse --abbrev-ref HEAD`.strip
       author = `git config user.name`.strip
+      project = IntegrationDiffRails.project_name
 
       response = connection.post('/api/v1/runs',
-                                 name: run_name, group: branch, author: author,
-                                 js_driver: @javascript_driver)
+                                 name: run_name, project: project, group: branch,
+                                 author: author, js_driver: @javascript_driver)
 
       @run_id = JSON.parse(response.body)["id"]
     end
