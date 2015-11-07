@@ -12,6 +12,10 @@ module IntegrationDiffRails
   mattr_accessor :project_name
   self.project_name = "idf"
 
+  # configure api_key required to authorize api access
+  mattr_accessor :api_key
+  self.api_key = ''
+
   # configure js driver which is used for taking screenshots.
   mattr_accessor :javascript_driver
   self.javascript_driver = "poltergeist"

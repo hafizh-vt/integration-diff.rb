@@ -78,6 +78,7 @@ module IntegrationDiffRails
 
     def connection
       @conn ||= Faraday.new(@base_uri) do |f|
+        f.request :basic_auth, IntegrationDiffRails.api_key, 'X'
         f.request :multipart
         f.request :url_encoded
         f.adapter :net_http
