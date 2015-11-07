@@ -14,6 +14,8 @@ Include `integration-diff-rails` in your rspec `spec_helper` and configure 4 var
 which will be used while taking screenshots. Make sure that `mock_service` is set to
 to proper value, as its very important.
 
+**NOTE:** Make sure that that project exists in service with `project_name`.
+
 
 ```rb
 IntegrationDiffRails.configure do |config|
