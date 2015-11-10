@@ -10,11 +10,12 @@ gem "integration-diff-rails", git: "git@github.com:code-mancers/integration-diff
 
 ### Configuration
 
-Include `integration-diff-rails` in your rspec `spec_helper` and configure 4 variables
+Include `integration-diff-rails` in your rspec `spec_helper` and configure 5 variables
 which will be used while taking screenshots. Make sure that `mock_service` is set to
 to proper value, as its very important.
 
-**NOTE:** Make sure that that project exists in service with `project_name`.
+**NOTE:** Make sure that that project exists in service with `project_name`. Also
+api key can be obtained by loggin into service and visiting `/api_key`.
 
 
 ```rb
@@ -24,6 +25,9 @@ IntegrationDiffRails.configure do |config|
 
   # configure project name to which images belong to.
   config.project_name = "idf"
+
+  # configure api_key required to authorize api access
+  config.api_key = ENV["IDIFF_API_KEY"]
 
   # configure js driver which is used for taking screenshots.
   config.javascript_driver = "poltergeist"
