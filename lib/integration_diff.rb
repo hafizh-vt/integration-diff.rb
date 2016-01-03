@@ -5,25 +5,35 @@ require 'integration_diff/dsl'
 
 module IntegrationDiff
   # configure domain to which all images have to be uploaded.
-  mattr_accessor :base_uri
-  self.base_uri = "http://idf.dev"
+  @@base_uri = "http://idf.dev"
+  def self.base_uri=(uri)
+    @@base_uri = uri
+  end
 
   # configure project name to which images belong to.
-  mattr_accessor :project_name
-  self.project_name = "idf"
+  @@project_name = "idf"
+  def self.project_name=(name)
+    @@project_name = name
+  end
 
   # configure api_key required to authorize api access
-  mattr_accessor :api_key
-  self.api_key = ''
+  @@api_key = ''
+  def self.api_key=(key)
+    @@api_key = key
+  end
 
   # configure js driver which is used for taking screenshots.
-  mattr_accessor :javascript_driver
-  self.javascript_driver = "poltergeist"
+  @@javascript_driver = "poltergeist"
+  def self.javascript_driver=(driver)
+    @@javascript_driver = driver
+  end
 
   # configure service to be mocked so that no screenshots are
   # taken, and uploaded to service.
-  mattr_accessor :enable_service
-  self.enable_service = false
+  @@enable_service = false
+  def self.enable_service=(enable)
+    @@enable_service = enable
+  end
 
   # helper to configure above variables.
   def self.configure
