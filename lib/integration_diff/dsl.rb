@@ -10,7 +10,7 @@ module IntegrationDiff
               IntegrationDiff::DummyRunner
             end
 
-          Rails.logger.info "Using runner #{klass}"
+          IntegrationDiff.logger.info "Using runner #{klass}"
           klass.instance
         end
     end

@@ -10,7 +10,7 @@ gem "integration-diff-rails", git: "git@github.com:code-mancers/integration-diff
 
 ### Configuration
 
-Include `integration-diff-rails` in your rspec `spec_helper` and configure 5 variables
+Include `integration-diff-rails` in your rspec `spec_helper` and configure 6 variables
 which will be used while taking screenshots. Make sure that `enable_service` is set to
 to proper value, as its very important.
 
@@ -34,6 +34,9 @@ IntegrationDiff.configure do |config|
 
   # configure service to mock capturing and uploading screenshots
   config.enable_service = !!ENV["IDIFF_ENABLE"]
+
+  # configure logger to log messages. optional.
+  config.logger = Rails.logger
 end
 ```
 

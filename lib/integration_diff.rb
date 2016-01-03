@@ -2,6 +2,7 @@ require 'faraday'
 require 'integration_diff/dummy_runner'
 require 'integration_diff/runner'
 require 'integration_diff/dsl'
+require 'logger'
 
 module IntegrationDiff
   # configure domain to which all images have to be uploaded.
@@ -33,6 +34,12 @@ module IntegrationDiff
   @@enable_service = false
   def self.enable_service=(enable)
     @@enable_service = enable
+  end
+
+  # configure logger, which will be used to log issues if any
+  @@logger = Logger.new(STDOUT)
+  def self.logger=(new_logger)
+    @@logger = new_logger
   end
 
   # helper to configure above variables.

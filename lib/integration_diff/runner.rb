@@ -25,7 +25,7 @@ module IntegrationDiff
       @identifiers = []
       draft_run
     rescue StandardError => e
-      Rails.logger.fatal e.message
+      IntegrationDiff.logger.fatal e.message
       raise e
     end
 
@@ -37,7 +37,7 @@ module IntegrationDiff
 
       finalize_run if @run_id
     rescue StandardError => e
-      Rails.logger.fatal e.message
+      IntegrationDiff.logger.fatal e.message
       raise e
     end
 
@@ -53,7 +53,7 @@ module IntegrationDiff
       run_name = @project_name + "-" + Time.now.iso8601
 
       # will have to make it configurable. ie, read from env.
-      # https://github.com/code-mancers/integration-diff-rails/pull/4#discussion-diff-42290464
+      # https://github.com/code-mancers/integration-diff.rb/pull/4#discussion-diff-42290464
       branch = `git rev-parse --abbrev-ref HEAD`.strip
       author = `git config user.name`.strip
       project = IntegrationDiff.project_name
