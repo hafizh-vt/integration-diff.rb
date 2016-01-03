@@ -1,13 +1,16 @@
-module IntegrationDiffRails
+require 'time'
+require 'json'
+
+module IntegrationDiff
   class Runner
     include Capybara::DSL
 
     DIR = 'tmp/idff_images'
 
     def self.instance
-      @runner ||= Runner.new(IntegrationDiffRails.base_uri,
-                             IntegrationDiffRails.project_name,
-                             IntegrationDiffRails.javascript_driver)
+      @runner ||= Runner.new(IntegrationDiff.base_uri,
+                             IntegrationDiff.project_name,
+                             IntegrationDiff.javascript_driver)
     end
 
     def initialize(base_uri, project_name, javascript_driver)
@@ -22,7 +25,7 @@ module IntegrationDiffRails
       @identifiers = []
       draft_run
     rescue StandardError => e
-      Rails.logger.fatal e.message
+      IntegrationDiff.logger.fatal e.message
       raise e
     end
 
@@ -34,7 +37,7 @@ module IntegrationDiffRails
 
       finalize_run if @run_id
     rescue StandardError => e
-      Rails.logger.fatal e.message
+      IntegrationDiff.logger.fatal e.message
       raise e
     end
 
@@ -47,13 +50,13 @@ module IntegrationDiffRails
     private
 
     def draft_run
-      run_name = @project_name + "-" + Time.current.iso8601
+      run_name = @project_name + "-" + Time.now.iso8601
 
       # will have to make it configurable. ie, read from env.
-      # https://github.com/code-mancers/integration-diff-rails/pull/4#discussion-diff-42290464
+      # https://github.com/code-mancers/integration-diff.rb/pull/4#discussion-diff-42290464
       branch = `git rev-parse --abbrev-ref HEAD`.strip
       author = `git config user.name`.strip
-      project = IntegrationDiffRails.project_name
+      project = IntegrationDiff.project_name
 
       response = connection.post('/api/v1/runs',
                                  name: run_name, project: project, group: branch,
@@ -78,7 +81,7 @@ module IntegrationDiffRails
 
     def connection
       @conn ||= Faraday.new(@base_uri) do |f|
-        f.request :basic_auth, IntegrationDiffRails.api_key, 'X'
+        f.request :basic_auth, IntegrationDiff.api_key, 'X'
         f.request :multipart
         f.request :url_encoded
         f.adapter :net_http

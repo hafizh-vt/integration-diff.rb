@@ -1,4 +1,4 @@
-module IntegrationDiffRails
+module IntegrationDiff
   class DummyRunner
     def self.instance
       @runner ||= DummyRunner.new

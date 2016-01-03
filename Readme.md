@@ -1,4 +1,4 @@
-# IntegrationDiffRails
+# IntegrationDiff
 
 Currently this supports only RSpec.
 
@@ -10,16 +10,16 @@ gem "integration-diff-rails", git: "git@github.com:code-mancers/integration-diff
 
 ### Configuration
 
-Include `integration-diff-rails` in your rspec `spec_helper` and configure 5 variables
-which will be used while taking screenshots. Make sure that `mock_service` is set to
-to proper value, as its very important.
+Include `integration-diff-rails` in your rspec `spec_helper` and configure 6 variables
+which will be used while taking screenshots. Make sure that `enable_service` is set to
+to true if images need to be uploaded.
 
 **NOTE:** Make sure that that project exists in service with `project_name`. Also
 api key can be obtained by loggin into service and visiting `/api_key`.
 
 
 ```rb
-IntegrationDiffRails.configure do |config|
+IntegrationDiff.configure do |config|
   # configure domain to which all images have to be uploaded.
   config.base_uri = "http://idf.dev"
 
@@ -33,24 +33,27 @@ IntegrationDiffRails.configure do |config|
   config.javascript_driver = "poltergeist"
 
   # configure service to mock capturing and uploading screenshots
-  config.mock_service = ENV["IDIFF_ENABLE"].blank?
+  config.enable_service = !!ENV["IDIFF_ENABLE"]
+
+  # configure logger to log messages. optional.
+  config.logger = Rails.logger
 end
 ```
 
-After configuration, include `IntegrationDiffRails::Dsl` in your `spec_helper` and
+After configuration, include `IntegrationDiff::Dsl` in your `spec_helper` and
 configure before and after suite so that suite interacts with the service.
 
 
 ```rb
 RSpec.configure do |config|
-  config.include IntegrationDiffRails::Dsl
+  config.include IntegrationDiff::Dsl
 
   config.before(:suite) do
-    IntegrationDiffRails.start_run
+    IntegrationDiff.start_run
   end
 
   config.after(:suite) do
-    IntegrationDiffRails.wrap_run
+    IntegrationDiff.wrap_run
   end
 end
 ```
