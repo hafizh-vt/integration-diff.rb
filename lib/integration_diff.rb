@@ -6,7 +6,7 @@ require 'logger'
 
 module IntegrationDiff
   # configure domain to which all images have to be uploaded.
-  @@base_uri = "http://idf.dev"
+  @@base_uri = "http://diff.codemancers.com"
   def self.base_uri=(uri)
     @@base_uri = uri
   end
