@@ -11,7 +11,7 @@ gem "integration-diff-rails", git: "git@github.com:code-mancers/integration-diff
 ### Configuration
 
 Include `integration-diff-rails` in your rspec `spec_helper` and configure 5 variables
-which will be used while taking screenshots. Make sure that `mock_service` is set to
+which will be used while taking screenshots. Make sure that `enable_service` is set to
 to proper value, as its very important.
 
 **NOTE:** Make sure that that project exists in service with `project_name`. Also
@@ -33,7 +33,7 @@ IntegrationDiff.configure do |config|
   config.javascript_driver = "poltergeist"
 
   # configure service to mock capturing and uploading screenshots
-  config.mock_service = ENV["IDIFF_ENABLE"].blank?
+  config.enable_service = !!ENV["IDIFF_ENABLE"]
 end
 ```
 

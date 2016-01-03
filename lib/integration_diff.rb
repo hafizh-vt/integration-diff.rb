@@ -22,8 +22,8 @@ module IntegrationDiff
 
   # configure service to be mocked so that no screenshots are
   # taken, and uploaded to service.
-  mattr_accessor :mock_service
-  self.mock_service = true
+  mattr_accessor :enable_service
+  self.enable_service = false
 
   # helper to configure above variables.
   def self.configure

@@ -4,10 +4,10 @@ module IntegrationDiff
       @idiff ||=
         begin
           klass =
-            if IntegrationDiff.mock_service
-              IntegrationDiff::DummyRunner
-            else
+            if IntegrationDiff.enable_service
               IntegrationDiff::Runner
+            else
+              IntegrationDiff::DummyRunner
             end
 
           Rails.logger.info "Using runner #{klass}"
