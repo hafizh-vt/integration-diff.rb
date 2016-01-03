@@ -1,4 +1,5 @@
 require 'time'
+require 'json'
 
 module IntegrationDiff
   class Runner
