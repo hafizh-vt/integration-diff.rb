@@ -1,9 +1,9 @@
 require 'faraday'
-require 'integration_diff_rails/dummy_runner'
-require 'integration_diff_rails/runner'
-require 'integration_diff_rails/dsl'
+require 'integration_diff/dummy_runner'
+require 'integration_diff/runner'
+require 'integration_diff/dsl'
 
-module IntegrationDiffRails
+module IntegrationDiff
   # configure domain to which all images have to be uploaded.
   mattr_accessor :base_uri
   self.base_uri = "http://idf.dev"
@@ -32,11 +32,11 @@ module IntegrationDiffRails
 
   # helps in setting up the run
   def self.start_run
-    IntegrationDiffRails::Dsl.idiff.start_run
+    IntegrationDiff::Dsl.idiff.start_run
   end
 
   # helps in wrapping up run by uploading images
   def self.wrap_run
-    IntegrationDiffRails::Dsl.idiff.wrap_run
+    IntegrationDiff::Dsl.idiff.wrap_run
   end
 end

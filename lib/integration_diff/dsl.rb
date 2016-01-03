@@ -1,13 +1,13 @@
-module IntegrationDiffRails
+module IntegrationDiff
   module Dsl
     def self.idiff
       @idiff ||=
         begin
           klass =
-            if IntegrationDiffRails.mock_service
-              IntegrationDiffRails::DummyRunner
+            if IntegrationDiff.mock_service
+              IntegrationDiff::DummyRunner
             else
-              IntegrationDiffRails::Runner
+              IntegrationDiff::Runner
             end
 
           Rails.logger.info "Using runner #{klass}"
@@ -16,7 +16,7 @@ module IntegrationDiffRails
     end
 
     def idiff
-      IntegrationDiffRails::Dsl.idiff
+      IntegrationDiff::Dsl.idiff
     end
   end
 end

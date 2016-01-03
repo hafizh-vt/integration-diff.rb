@@ -1,4 +1,4 @@
-# IntegrationDiffRails
+# IntegrationDiff
 
 Currently this supports only RSpec.
 
@@ -19,7 +19,7 @@ api key can be obtained by loggin into service and visiting `/api_key`.
 
 
 ```rb
-IntegrationDiffRails.configure do |config|
+IntegrationDiff.configure do |config|
   # configure domain to which all images have to be uploaded.
   config.base_uri = "http://idf.dev"
 
@@ -37,20 +37,20 @@ IntegrationDiffRails.configure do |config|
 end
 ```
 
-After configuration, include `IntegrationDiffRails::Dsl` in your `spec_helper` and
+After configuration, include `IntegrationDiff::Dsl` in your `spec_helper` and
 configure before and after suite so that suite interacts with the service.
 
 
 ```rb
 RSpec.configure do |config|
-  config.include IntegrationDiffRails::Dsl
+  config.include IntegrationDiff::Dsl
 
   config.before(:suite) do
-    IntegrationDiffRails.start_run
+    IntegrationDiff.start_run
   end
 
   config.after(:suite) do
-    IntegrationDiffRails.wrap_run
+    IntegrationDiff.wrap_run
   end
 end
 ```

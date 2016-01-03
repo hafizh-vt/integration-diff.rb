@@ -1,7 +1,7 @@
 require 'test_helper'
 
-class IntegrationDiffRailsTest < ActiveSupport::TestCase
+class IntegrationDiffTest < ActiveSupport::TestCase
   test "truth" do
-    assert_kind_of Module, IntegrationDiffRails
+    assert_kind_of Module, IntegrationDiff
   end
 end
