@@ -80,7 +80,7 @@ module IntegrationDiff
     end
 
     def connection
-      @conn ||= Faraday.new(@base_uri) do |f|
+      @conn ||= Faraday.new(@base_uri, request: { timeout: 120, open_timeout: 120 }) do |f|
         f.request :basic_auth, IntegrationDiff.api_key, 'X'
         f.request :multipart
         f.request :url_encoded

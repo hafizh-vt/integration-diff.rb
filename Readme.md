@@ -5,7 +5,7 @@ Currently this supports only RSpec.
 ### Installation
 
 ```rb
-gem "integration-diff-rails", git: "git@github.com:code-mancers/integration-diff-rails"
+gem 'integration-diff'
 ```
 
 ### Configuration
