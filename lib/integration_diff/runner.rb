@@ -55,8 +55,6 @@ module IntegrationDiff
     def draft_run
       run_name = @project_name + "-" + Time.now.iso8601
 
-      # will have to make it configurable. ie, read from env.
-      # https://github.com/code-mancers/integration-diff.rb/pull/4#discussion-diff-42290464
       details = IntegrationDiff::RunDetails.new.details
       branch = details.branch
       author = details.author
