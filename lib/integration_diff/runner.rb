@@ -1,6 +1,7 @@
 require 'time'
 require 'json'
 require 'integration_diff/run_details'
+require 'integration_diff/uploader'
 
 module IntegrationDiff
   class Runner
@@ -25,8 +26,8 @@ module IntegrationDiff
 
     # TODO: Improve error handling here for network timeouts
     def start_run
-      @identifiers = []
       draft_run
+      @uploader = IntegrationDiff::Uploader.build(@base_uri, @run_id)
     rescue StandardError => e
       IntegrationDiff.logger.fatal e.message
       raise e
@@ -34,9 +35,7 @@ module IntegrationDiff
 
     # TODO: Improve error handling here for network timeouts
     def wrap_run
-      @identifiers.each do |identifier|
-        upload_image(identifier)
-      end
+      @uploader.wrapup
 
       complete_run if @run_id
     rescue StandardError => e
@@ -47,7 +46,7 @@ module IntegrationDiff
     def screenshot(identifier)
       screenshot_name = image_file(identifier)
       page.save_screenshot(screenshot_name, full: true)
-      @identifiers << identifier
+      @uploader.enqueue(identifier)
     end
 
     private
@@ -65,13 +64,6 @@ module IntegrationDiff
                                  author: author, js_driver: @javascript_driver)
 
       @run_id = JSON.parse(response.body)["id"]
-    end
-
-    def upload_image(identifier)
-      IntegrationDiff.logger.fatal "uploading #{identifier}"
-      image_io = Faraday::UploadIO.new(image_file(identifier), 'image/png')
-      connection.post("/api/v1/runs/#{@run_id}/run_images",
-                      identifier: identifier, image: image_io)
     end
 
     def complete_run
