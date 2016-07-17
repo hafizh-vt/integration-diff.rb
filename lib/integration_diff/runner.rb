@@ -19,10 +19,8 @@ module IntegrationDiff
       @project_name = project_name
       @javascript_driver = javascript_driver
 
-      unless Dir.exist?(DIR)
-        Dir.mkdir('tmp')
-        Dir.mkdir(DIR)
-      end
+      Dir.mkdir('tmp') unless Dir.exist?('tmp')
+      Dir.mkdir(DIR) unless Dir.exist?(DIR)
     end
 
     # TODO: Improve error handling here for network timeouts
