@@ -82,7 +82,7 @@ module IntegrationDiff
     end
 
     def image_file(identifier)
-      "#{DIR}/#{identifier}.png"
+      "#{Dir.pwd}/#{DIR}/#{identifier}.png"
     end
 
     def connection
