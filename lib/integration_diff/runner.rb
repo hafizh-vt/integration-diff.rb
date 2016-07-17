@@ -6,7 +6,7 @@ module IntegrationDiff
   class Runner
     include Capybara::DSL
 
-    DIR = 'tmp/idiff_images'
+    DIR = 'tmp/idiff_images'.freeze
 
     def self.instance
       @runner ||= Runner.new(IntegrationDiff.base_uri,
