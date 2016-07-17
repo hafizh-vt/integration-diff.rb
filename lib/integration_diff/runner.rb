@@ -5,7 +5,7 @@ module IntegrationDiff
   class Runner
     include Capybara::DSL
 
-    DIR = 'tmp/idff_images'
+    DIR = 'tmp/idiff_images'
 
     def self.instance
       @runner ||= Runner.new(IntegrationDiff.base_uri,
@@ -17,7 +17,11 @@ module IntegrationDiff
       @base_uri = base_uri
       @project_name = project_name
       @javascript_driver = javascript_driver
-      Dir.mkdir(DIR) unless Dir.exist?(DIR)
+
+      unless Dir.exist?(DIR)
+        Dir.mkdir('tmp')
+        Dir.mkdir(DIR)
+      end
     end
 
     # TODO: Improve error handling here for network timeouts
