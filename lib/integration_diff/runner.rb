@@ -70,6 +70,7 @@ module IntegrationDiff
     end
 
     def upload_image(identifier)
+      IntegrationDiff.logger.fatal "uploading #{identifier}"
       image_io = Faraday::UploadIO.new(image_file(identifier), 'image/png')
       connection.post("/api/v1/runs/#{@run_id}/run_images",
                       identifier: identifier, image: image_io)
