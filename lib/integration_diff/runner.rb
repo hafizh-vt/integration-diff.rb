@@ -40,7 +40,7 @@ module IntegrationDiff
         upload_image(identifier)
       end
 
-      finalize_run if @run_id
+      complete_run if @run_id
     rescue StandardError => e
       IntegrationDiff.logger.fatal e.message
       raise e
@@ -77,8 +77,8 @@ module IntegrationDiff
                       identifier: identifier, image: image_io)
     end
 
-    def finalize_run
-      connection.put("/api/v1/runs/#{@run_id}/status", status: "finalized")
+    def complete_run
+      connection.put("/api/v1/runs/#{@run_id}/status", status: "completed")
     end
 
     def image_file(identifier)
