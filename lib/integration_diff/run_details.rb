@@ -41,9 +41,9 @@ module IntegrationDiff
     end
 
     def details
-      if ENV['JENKINS_HOME'].present?
+      if !!ENV['JENKINS_HOME']
         Jenkins.new
-      elsif ENV['TRAVIS'].present?
+      elsif !!ENV['TRAVIS']
         Travis.new
       elsif system('git branch')
         GitRepo.new
