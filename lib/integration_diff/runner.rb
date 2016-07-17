@@ -1,5 +1,6 @@
 require 'time'
 require 'json'
+require 'integration_diff/run_details'
 
 module IntegrationDiff
   class Runner
@@ -58,8 +59,9 @@ module IntegrationDiff
 
       # will have to make it configurable. ie, read from env.
       # https://github.com/code-mancers/integration-diff.rb/pull/4#discussion-diff-42290464
-      branch = `git rev-parse --abbrev-ref HEAD`.strip
-      author = `git config user.name`.strip
+      details = IntegrationDiff::RunDetails.new.details
+      branch = details.branch
+      author = details.author
       project = IntegrationDiff.project_name
 
       response = connection.post('/api/v1/runs',
