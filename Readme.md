@@ -10,9 +10,9 @@ gem 'integration-diff'
 
 ### Configuration
 
-Include `integration-diff-rails` in your rspec `spec_helper` and configure 6 variables
-which will be used while taking screenshots. Make sure that `enable_service` is set to
-to true if images need to be uploaded.
+Include `integration-diff` in your rspec `spec_helper` and configure 6 variables
+which will be used while taking screenshots. Make sure that `enable_service` is
+set to true if images need to be uploaded.
 
 **NOTE:** Make sure that that project exists in service with `project_name`. Also
 api key can be obtained by loggin into service and visiting `/api_key`.
