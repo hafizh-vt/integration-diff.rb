@@ -3,7 +3,6 @@ require 'integration_diff/utils'
 module IntegrationDiff
   module Uploaders
     class Concurrent
-      DIR = 'tmp/idiff_images'.freeze
       MAX_NO_OF_THREADS = 20
 
       def initialize(run_id)
@@ -32,6 +31,7 @@ module IntegrationDiff
         end
 
         @pool.shutdown
+        @pool.wait_for_termination
       end
     end
   end
