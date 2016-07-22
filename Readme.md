@@ -73,3 +73,13 @@ describe "Landing page" do
   end
 end
 ```
+
+### Concurrency
+
+By default, when all the screenshots are collected, and before suite ends, this
+gem will upload all the screenshots taken. `IntegrationDiff.wrap_run` is the
+method responsible for the same.
+
+However, if you want to upload screenshots as and when they are taken, this gem
+has soft dependency on `concurrent-ruby` gem. Make sure that this gem is
+**required** before capturing screenshots, and see the magic yourself :)
