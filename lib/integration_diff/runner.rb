@@ -13,6 +13,9 @@ module IntegrationDiff
                              IntegrationDiff.javascript_driver)
     end
 
+    attr_accessor :browser, :device, :os
+    attr_accessor :browser_version, :device_name, :os_version
+
     def initialize(project_name, javascript_driver)
       @project_name = project_name
       @javascript_driver = javascript_driver
@@ -20,6 +23,10 @@ module IntegrationDiff
       dir = IntegrationDiff::Utils.images_dir
       Dir.mkdir('tmp') unless Dir.exist?('tmp')
       Dir.mkdir(dir) unless Dir.exist?(dir)
+
+      self.browser = 'firefox'
+      self.device = 'desktop'
+      self.os = 'linux'
     end
 
     # TODO: Improve error handling here for network timeouts
@@ -42,9 +49,14 @@ module IntegrationDiff
     end
 
     def screenshot(identifier)
+      raise 'no browser information provided' if browser.nil?
+      raise 'no device information provided' if device.nil?
+      raise 'no os information provided' if os.nil?
+
       screenshot_name = IntegrationDiff::Utils.image_file(identifier)
       page.save_screenshot(screenshot_name, full: true)
-      @uploader.enqueue(identifier)
+      @uploader.enqueue(identifier, browser, device, os, browser_version,
+                        device_name, os_version)
     end
 
     private

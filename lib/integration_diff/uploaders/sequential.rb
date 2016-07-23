@@ -5,16 +5,22 @@ module IntegrationDiff
     class Sequential
       def initialize(run_id)
         @run_id = run_id
-        @identifiers = []
+        @identifiers_with_env = []
       end
 
-      def enqueue(identifier)
-        @identifiers << identifier
+      def enqueue(identifier, browser, device, os, browser_version,
+                  device_name, os_version)
+        @identifiers_with_env << [identifier, browser, device, os,
+                                  browser_version, device_name,
+                                  os_version]
       end
 
       def wrapup
-        @identifiers.each do |identifier|
-          IntegrationDiff::Utils.upload_image(@run_id, identifier)
+        @identifiers_with_env
+          .each do |identifier, browser, device, os, browser_version, device_name, os_version|
+          IntegrationDiff::Utils
+            .upload_image(@run_id, identifier, browser, device, os,
+                          browser_version, device_name, os_version)
         end
       end
     end
