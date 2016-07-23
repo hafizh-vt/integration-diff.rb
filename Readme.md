@@ -60,19 +60,58 @@ end
 
 ### Usage
 
-In your specs, simply use `idiff` helper. make sure that you pass unique identifier
-to screenshots that you take. unique identifier helps in differentiating this
-screenshot taken from other screenshots.
+In your specs, simply use `idiff` helper which has bunch of config utilities.
+
+First, you should specify environment details under which screenshots are
+taken. There are 6 parameters which can be configured.
+
+Parameter|Explanation
+---------|-----------
+browser  | which browser is used to take screenshots. default: 'firefox'
+         | supported: firefox, chrome, safari, ie, opera
+device   | which device is used to take screenshots. default: 'desktop'
+         | supported: desktop, laptop, tablet, phone
+os       | which os is used to take screenshots. default: 'linux'
+         | supported: android, ios, windows, osx, linux
+browser_version | (optional) version of browser used, for eg: '46' for firefox
+device_name     | (optional) name of device, for eg: 'MacBook Air'
+os_version      | (optional) version of os used, for eg: '10.11'
+
+
+They can be configured using `idiff` helper while running specs. For eg:
+
+```rb
+idiff.browser = 'firefox'
+idiff.device = 'laptop'
+idiff.os = 'osx'
+idiff.browser_version = '46'
+idiff.device_name = 'MBA'
+idiff.os_version = '10.11.5'
+```
+
+Also, `idiff` can used to take screenshots also. Make sure that you pass
+unique identifier to screenshots that you take. unique identifier helps
+in differentiating this screenshot taken from other screenshots for a
+given set of `browser`, `device`, and `os`.
 
 
 ```rb
 describe "Landing page" do
   it "has a big banner" do
     visit root_path
+
+    idiff.browser = 'chrome'
     idiff.screenshot("unique-identifier")
   end
 end
 ```
+
+Since there is flexibility to specify `browser`, `device`, and `os` while
+running specs dynamically (unlike specifying `project_name`), you can run
+all your specs in a loop by changing `browser`, `device` and `os` by
+changing selenium driver, or changing viewport etc. Flexibility for your
+service!
+
 
 ### Concurrency
 
