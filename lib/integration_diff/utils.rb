@@ -15,11 +15,14 @@ module IntegrationDiff
       'tmp/idiff_images'.freeze
     end
 
-    def self.upload_image(run_id, identifier)
+    def self.upload_image(run_id, identifier, browser, device, os, browser_version,
+                          device_name, os_version)
       IntegrationDiff.logger.fatal "uploading #{identifier}"
       image_io = Faraday::UploadIO.new(image_file(identifier), 'image/png')
       connection.post("/api/v1/runs/#{run_id}/run_images",
-                      identifier: identifier, image: image_io)
+                      identifier: identifier, image: image_io, browser: browser,
+                      device: device, os: os, browser_version: browser_version,
+                      device_name: device_name, os_version: os_version)
     end
 
     def self.image_file(identifier)

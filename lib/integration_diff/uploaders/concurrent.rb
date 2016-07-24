@@ -11,11 +11,14 @@ module IntegrationDiff
         @screenshots_taken = 0
       end
 
-      def enqueue(identifier)
+      def enqueue(identifier, browser, device, os, browser_version,
+                  device_name, os_version)
         @screenshots_taken += 1
 
         @pool.post do
-          IntegrationDiff::Utils.upload_image(@run_id, identifier)
+          IntegrationDiff::Utils
+            .upload_image(@run_id, identifier, browser, device, os,
+                          browser_version, device_name, os_version)
         end
       end
 
