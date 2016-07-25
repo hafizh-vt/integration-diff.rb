@@ -29,10 +29,26 @@ module IntegrationDiff
       self.os = 'linux'
     end
 
+    # edited by @luthfiswees
     # TODO: Improve error handling here for network timeouts
-    def start_run
-      draft_run
-      @uploader = IntegrationDiff::Uploader.build(@run_id)
+    def start_run(run_id)
+      if run_id == nil
+        draft_run
+      else
+        @run_id = run_id
+        @uploader = IntegrationDiff::Uploader.build(@run_id)
+      end
+    rescue StandardError => e
+      IntegrationDiff.logger.fatal e.message
+      raise e
+    end
+
+    # created by @luthfiswees
+    # to upload images into the current run
+    def upload_run 
+      @uploader.wrapup
+
+      # complete_run if @run_id
     rescue StandardError => e
       IntegrationDiff.logger.fatal e.message
       raise e
@@ -40,7 +56,7 @@ module IntegrationDiff
 
     # TODO: Improve error handling here for network timeouts
     def wrap_run
-      @uploader.wrapup
+      # @uploader.wrapup
 
       complete_run if @run_id
     rescue StandardError => e
@@ -57,6 +73,11 @@ module IntegrationDiff
       page.save_screenshot(screenshot_name, full: true)
       @uploader.enqueue(identifier, browser, device, os, browser_version,
                         device_name, os_version)
+    end
+
+    # to fetch run id from the current run
+    def get_run_id 
+      return @run_id
     end
 
     private

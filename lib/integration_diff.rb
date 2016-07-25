@@ -65,9 +65,22 @@ module IntegrationDiff
     yield(self)
   end
 
+  # created by @luthfiswees
+  # helps getting run id from existing runs
+  def self.get_run_id 
+    return IntegrationDiff::Dsl.idiff.get_run_id
+  end
+
+  # edited by @luthfiswees
   # helps in setting up the run
-  def self.start_run
-    IntegrationDiff::Dsl.idiff.start_run
+  def self.start_run(run_id)
+    IntegrationDiff::Dsl.idiff.start_run run_id
+  end
+
+  # created by @luthfiswees
+  # helps uploading images to the current run avalaible
+  def self.upload_run
+    IntegrationDiff::Dsl.idiff.upload_run
   end
 
   # helps in wrapping up run by uploading images
