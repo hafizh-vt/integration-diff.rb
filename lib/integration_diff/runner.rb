@@ -65,6 +65,8 @@ module IntegrationDiff
     end
 
     def screenshot(identifier)
+      identifier = identify identifier
+
       raise 'no browser information provided' if browser.nil?
       raise 'no device information provided' if device.nil?
       raise 'no os information provided' if os.nil?
@@ -81,6 +83,23 @@ module IntegrationDiff
     end
 
     private
+
+    # function to give a tag to identifier
+    def identify(identifier)
+      name = identifier
+
+      if :browser != nil
+        name = "#{identifier}-#{:browser}"
+
+        if :device != nil 
+          name = "#{identifier}-#{:browser}-#{:device}"
+        end
+      else
+        name = "#{identifier}-#{ENV['CAPTURER_DRIVER']}"
+      end
+
+      return name 
+    end
 
     def draft_run
       run_name = @project_name + "-" + Time.now.iso8601
