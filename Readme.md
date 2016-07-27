@@ -122,3 +122,208 @@ method responsible for the same.
 However, if you want to upload screenshots as and when they are taken, this gem
 has soft dependency on `concurrent-ruby` gem. Make sure that this gem is
 **required** before capturing screenshots, and see the magic yourself :)
+
+
+### Multiple Runs
+
+All the guides provided below are meant for Ruby on Rails. 
+
+In order to run multiple runs automatically with different drivers, there are several 
+things that we need to do. 
+
+- setting up the drivers
+- configuration in `spec_helper.rb`
+- create a rake task
+
+In this build we support two drivers. The default one from Capybara and also remote drivers 
+from SauceLabs. To use the default Capybara drivers, simply register them in a file (for example 
+`capybara_driver.rb`) and put them in `spec/supports/` to be required later in `spec_helper.rb`.
+
+Default Driver :
+```rb
+case ENV['IDIFF_DRIVER']
+
+when "firefox"
+
+  # register the driver here 
+  Capybara.register_driver :used_driver do |app|
+    Capybara::Selenium::Driver.new(app, :browser => :firefox)
+  end
+  
+else 
+  #  default driver if not specified
+  Capybara.register_driver :used_driver do |app|
+    Capybara::Selenium::Driver.new(app, :browser => :firefox)
+  end
+end
+
+# register the selected drivers as current driver used
+Capybara.current_driver = :used_driver
+
+```
+
+SauceLabs Driver :
+```rb
+case ENV['IDIFF_DRIVER']
+
+when "saucelabs"
+
+  # URL for SauceLabs drivers
+  saucelabs_enable = true
+  sauce_url = "http://#{ENV['SAUCE_USERNAME']}:#{ENV['SAUCE_KEY']}@ondemand.saucelabs.com:80/wd/hub"
+
+  # register your driver capabilities here
+  # Remember, only SauceLabs capability formats that are accepted
+  capabilities = {
+      :platform => "Windows 8",
+      :browserName => "Chrome",
+      :version => "31",
+      :screen_resolution => "1280x1024",
+
+      :name => IntegrationDiff.name_test( ENV['IDIFF_DRIVER'] )
+  }
+
+  # setting up the driver over here
+  # This settings will invoke the test environment over the remote
+  @driver = Selenium::WebDriver.for(:remote,
+          :url => sauce_url,
+          :desired_capabilities => capabilities)
+
+  # setting up the browser over here
+  @browser = {
+    browser: :remote,
+    url: sauce_url,
+    desired_capabilities: capabilities
+  }
+
+  # register your driver over here 
+  # This settings will register your SauceLabs drivers into Capybara drivers
+  Capybara.register_driver :used_driver do |app|
+    Capybara::Selenium::Driver.new(app, @browser)
+  end
+  
+  else 
+  #  default driver if not specified
+  Capybara.register_driver :used_driver do |app|
+    Capybara::Selenium::Driver.new(app, :browser => :firefox)
+  end
+end
+
+# register the selected drivers as current driver used
+Capybara.current_driver = :used_driver
+
+# if you are using SauceLabs drivers. Please use the code below
+# this code purpose is to connect Capybara with the remote test
+if saucelabs_enable then
+  Capybara.app_host = "#{sauce_url}/test/#{Capybara.current_session.driver.browser.session_id}"
+end
+
+```
+
+***Keep in mind*** that we should leave the `ENV['IDIFF_DRIVER']` as it is. You can add 
+more test drivers by adding another `when` case in the code. After setting up the drivers, 
+dont forget to require it in `spec_helper.rb` or `rails_helper.rb`
+
+```rb
+require_relative '../spec/supports/capybara_driver'
+```
+
+The next thing that we should do is to configure `IntegrationDiff` in `spec_helper.rb`
+
+```rb
+require "integration-diff"
+
+Rails.logger = Logger.new(STDOUT)
+
+IntegrationDiff.configure do |config|
+    # configure domain to which all images have to be uploaded.
+    config.base_uri = "http://diff.codemancers.com"
+
+    # configure project name to which images belong to.
+    config.project_name = "Dummy"
+
+    # configure api_key required to authorize api access
+    config.api_key = ENV["IDIFF_API_KEY"]
+
+    # configure js driver which is used for taking screenshots.
+    config.javascript_driver = "poltergeist"
+
+    # configure service to mock capturing and uploading screenshots
+    config.enable_service = !!ENV["IDIFF_ENABLE"]
+
+    # configure logger to log messages. optional.
+    config.logger = Rails.logger
+  end
+
+RSpec.configure do |config|
+  config.include IntegrationDiff::Dsl
+
+  config.before(:suite) do
+    IntegrationDiff.rerun ENV['IDIFF_RUN_ID'].to_i
+  end
+
+  config.after(:suite) do 
+    IntegrationDiff.upload_run 
+  end
+  
+end
+
+```
+
+`rerun` and `upload_run` are needed to wrap multiple test runs with only one 
+report and one run id. Just leave `ENV['IDIFF_RUN_ID']` as it is as we need it 
+to identify current run id.
+
+And the last thing to do is to create a rake task in `lib/task/`. Here, I have 
+`idiff.rake` in `lib/task/idiff.rake` that contains the code below.
+
+```rb
+array_of_driver = [:firefox, :saucelabs]
+
+task :config_idiff do
+  Rails.logger = Logger.new(STDOUT)
+
+  IntegrationDiff.configure do |config|
+      # configure domain to which all images have to be uploaded.
+      config.base_uri = "http://diff.codemancers.com"
+
+      # configure project name to which images belong to.
+      config.project_name = "DummyStore"
+
+      # configure api_key required to authorize api access
+      config.api_key = ENV["IDIFF_API_KEY"]
+
+      # configure js driver which is used for taking screenshots.
+      config.javascript_driver = "poltergeist"
+
+      # configure service to mock capturing and uploading screenshots
+      config.enable_service = !!ENV["IDIFF_ENABLE"]
+
+      # configure logger to log messages. optional.
+      config.logger = Rails.logger
+    end
+end
+
+
+task :idiff_bundle => [:config_idiff] do
+
+  include IntegrationDiff::Dsl
+
+  path = "spec/features/page_renders_spec.rb"
+  IntegrationDiff.start_multiple_runs(array_of_driver, path)
+
+end
+
+```
+
+The rake task `idiff_bundle` will execute the `rspec` command according to how many drivers 
+registered in `array_of_driver`. `array_of_driver` contains all the driver you want to use
+in the test. ***Keep in mind*** that the drivers listed in `array_of_driver` must be registered 
+first in `spec/supports/capybara_driver.rb`.
+
+After all the settings, to execute multiple runs. Just use `rake` to execute it. For example 
+from the code presented. I execute this command to run the code above.
+
+```rb
+rake idiff_bundle
+```

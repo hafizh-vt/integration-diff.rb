@@ -73,14 +73,32 @@ module IntegrationDiff
 
   # edited by @luthfiswees
   # helps in setting up the run
-  def self.start_run(run_id)
-    IntegrationDiff::Dsl.idiff.start_run run_id
+  def self.start_run
+    IntegrationDiff::Dsl.idiff.start_run
+  end
+
+  # created by @luthfiswees
+  # designed for reusing runs with same run id
+  def self.rerun(run_id)
+    IntegrationDiff::Dsl.idiff.rerun run_id
   end
 
   # created by @luthfiswees
   # helps uploading images to the current run avalaible
   def self.upload_run
     IntegrationDiff::Dsl.idiff.upload_run
+  end
+
+  # created by @luthfiswees
+  # wrap up processes to execute multiple runs with multiple drivers
+  def self.start_multiple_runs(array_of_drivers, path)
+    IntegrationDiff::Dsl.idiff.start_multiple_runs(array_of_drivers, path)
+  end
+
+  # created by @luthfiswees
+  # to name test with provided project name and driver
+  def self.name_test(name)
+    return IntegrationDiff::Dsl.idiff.name_test name
   end
 
   # helps in wrapping up run by uploading images

@@ -31,13 +31,20 @@ module IntegrationDiff
 
     # edited by @luthfiswees
     # TODO: Improve error handling here for network timeouts
-    def start_run(run_id)
-      if run_id == nil
-        draft_run
-      else
-        @run_id = run_id
-        @uploader = IntegrationDiff::Uploader.build(@run_id)
-      end
+    def start_run
+      draft_run
+      @uploader = IntegrationDiff::Uploader.build(@run_id)
+
+    rescue StandardError => e
+      IntegrationDiff.logger.fatal e.message
+      raise e
+    end
+
+    # created by @luthfiswees
+    # designed for running multiple runs
+    def rerun(run_id)
+      @run_id = run_id
+      @uploader = IntegrationDiff::Uploader.build(@run_id)
     rescue StandardError => e
       IntegrationDiff.logger.fatal e.message
       raise e
@@ -56,7 +63,7 @@ module IntegrationDiff
 
     # TODO: Improve error handling here for network timeouts
     def wrap_run
-      # @uploader.wrapup
+      @uploader.wrapup
 
       complete_run if @run_id
     rescue StandardError => e
@@ -82,21 +89,25 @@ module IntegrationDiff
       return @run_id
     end
 
+    # to name a test into specific format
+    def name_test(name)
+      return "#{@project_name}-#{name}"
+    end
+
+    # to start multiple runs simultanously with different drivers
+    def start_multiple_runs(array_of_drivers, path)
+      start_run 
+      array_of_drivers.each do |driver|
+        `IDIFF_RUN_ID=#{IntegrationDiff.get_run_id} IDIFF_DRIVER=#{driver.to_s} rspec #{path} -fd`
+      end
+      wrap_run
+    end
+
     private
 
     # function to give a tag to identifier
     def identify(identifier)
-      name = identifier
-
-      if :browser != nil
-        name = "#{identifier}-#{:browser}"
-
-        if :device != nil 
-          name = "#{identifier}-#{:browser}-#{:device}"
-        end
-      else
-        name = "#{identifier}-#{ENV['CAPTURER_DRIVER']}"
-      end
+      name = "#{@project_name}-#{identifier}-#{ENV['IDIFF_DRIVER']}"
 
       return name 
     end
