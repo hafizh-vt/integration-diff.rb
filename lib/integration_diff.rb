@@ -90,12 +90,6 @@ module IntegrationDiff
   end
 
   # created by @luthfiswees
-  # wrap up processes to execute multiple runs with multiple drivers
-  def self.start_multiple_runs(array_of_drivers, path)
-    IntegrationDiff::Dsl.idiff.start_multiple_runs(array_of_drivers, path)
-  end
-
-  # created by @luthfiswees
   # to name test with provided project name and driver
   def self.name_test(name)
     return IntegrationDiff::Dsl.idiff.name_test name

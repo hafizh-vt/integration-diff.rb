@@ -212,10 +212,16 @@ In order to make the test drivers works, use SauceConnect to make it avalaible. 
 
 ***Keep in mind*** that we should leave the `ENV['IDIFF_DRIVER']` as it is. You can add 
 more test drivers by adding another `when` case in the code. After setting up the drivers, 
-dont forget to require it in `spec_helper.rb` or `rails_helper.rb`
+dont forget to require it in `spec_helper.rb` or `rails_helper.rb`. Example is written below.
 
 ```rb
 require_relative '../spec/supports/capybara_driver'
+```
+
+##### or
+
+```rb
+Dir[Rails.root.join('spec/supports/**/*.rb')].each { |f| require f }
 ```
 
 The next thing that we should do is to configure `IntegrationDiff` in `spec_helper.rb`
@@ -299,8 +305,15 @@ task :idiff_bundle => [:config_idiff] do
 
   include IntegrationDiff::Dsl
 
+  # Specify files path where the spec belongs to
   path = "spec/features/page_renders_spec.rb"
-  IntegrationDiff.start_multiple_runs(array_of_driver, path)
+  
+  # Execute rake task
+  IntegrationDiff.start_run
+  array_of_driver.each do |driver|
+      `IDIFF_RUN_ID=#{IntegrationDiff.get_run_id} IDIFF_DRIVER=#{driver.to_s} rspec #{path}`
+    end
+  IntegrationDiff.wrap_run
 
 end
 
@@ -310,6 +323,9 @@ The rake task `idiff_bundle` will execute the `rspec` command according to how m
 registered in `array_of_driver`. `array_of_driver` contains all the driver you want to use
 in the test. ***Keep in mind*** that the drivers listed in `array_of_driver` must be registered 
 first in `spec/supports/capybara_driver.rb`.
+
+***IMPORTANT***, environment variables `IDIFF_RUN_ID` and `IDIFF_DRIVER` must be listed in the command. You can also add any environment variable 
+that you want in the backticks command.
 
 After all the settings, to execute multiple runs. Just use `rake` to execute it. For example 
 from the code presented. I execute this command to run the code above.
