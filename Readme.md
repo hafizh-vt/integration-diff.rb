@@ -139,7 +139,7 @@ In this build we support two drivers. The default one from Capybara and also rem
 from SauceLabs. To use the default Capybara drivers, simply register them in a file (for example 
 `capybara_driver.rb`) and put them in `spec/supports/` to be required later in `spec_helper.rb`.
 
-Default Driver :
+##### Default Driver :
 ```rb
 case ENV['IDIFF_DRIVER']
 
@@ -162,7 +162,7 @@ Capybara.current_driver = :used_driver
 
 ```
 
-SauceLabs Driver :
+##### SauceLabs Driver :
 ```rb
 case ENV['IDIFF_DRIVER']
 
@@ -185,11 +185,6 @@ when "saucelabs"
 
   # setting up the driver over here
   # This settings will invoke the test environment over the remote
-  @driver = Selenium::WebDriver.for(:remote,
-          :url => sauce_url,
-          :desired_capabilities => capabilities)
-
-  # setting up the browser over here
   @browser = {
     browser: :remote,
     url: sauce_url,
@@ -212,13 +207,8 @@ end
 # register the selected drivers as current driver used
 Capybara.current_driver = :used_driver
 
-# if you are using SauceLabs drivers. Please use the code below
-# this code purpose is to connect Capybara with the remote test
-if saucelabs_enable then
-  Capybara.app_host = "#{sauce_url}/test/#{Capybara.current_session.driver.browser.session_id}"
-end
-
 ```
+In order to make the test drivers works, use SauceConnect to make it avalaible. to use SauceConnect, you can access the guide [here](https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy)
 
 ***Keep in mind*** that we should leave the `ENV['IDIFF_DRIVER']` as it is. You can add 
 more test drivers by adding another `when` case in the code. After setting up the drivers, 
