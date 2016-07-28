@@ -94,15 +94,6 @@ module IntegrationDiff
       return "#{@project_name}-#{name}"
     end
 
-    # to start multiple runs simultanously with different drivers
-    def start_multiple_runs(array_of_drivers, path)
-      start_run 
-      array_of_drivers.each do |driver|
-        `IDIFF_RUN_ID=#{IntegrationDiff.get_run_id} IDIFF_DRIVER=#{driver.to_s} rspec #{path} -fd`
-      end
-      wrap_run
-    end
-
     private
 
     # function to give a tag to identifier
