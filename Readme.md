@@ -135,6 +135,17 @@ things that we need to do.
 - configuration in `spec_helper.rb`
 - create a rake task
 
+Before doing all of the task above, we should set the environment variables needed for the task. Don't bother to set `SAUCE_USERNAME` and `SAUCE_KEY` if you don't use SauceLabs Drivers.
+
+##### Environment Variables :
+
+```rb
+export IDIFF_ENABLE=true             # for enabling integration diff in multiple runs
+export IDIFF_API_KEY=888888888888888 # api key for integration diff
+export SAUCE_USERNAME=myusername     # SauceLabs username (if you're using Sauce drivers)
+export SAUCE_KEY=6768786696766669679 # SauceLabs key (if you're using Sauce drivers)
+```
+
 In this build we support two drivers. The default one from Capybara and also remote drivers 
 from SauceLabs. To use the default Capybara drivers, simply register them in a file (for example 
 `capybara_driver.rb`) and put them in `spec/supports/` to be required later in `spec_helper.rb`.
@@ -169,8 +180,7 @@ case ENV['IDIFF_DRIVER']
 when "saucelabs"
 
   # URL for SauceLabs drivers
-  saucelabs_enable = true
-  sauce_url = "http://#{ENV['SAUCE_USERNAME']}:#{ENV['SAUCE_KEY']}@ondemand.saucelabs.com:80/wd/hub"
+  sauce_url = "http://#{ENV['SAUCE_USERNAME']}:#{ENV['SAUCE_KEY']}@localhost:4445/wd/hub"
 
   # register your driver capabilities here
   # Remember, only SauceLabs capability formats that are accepted
@@ -197,7 +207,7 @@ when "saucelabs"
     Capybara::Selenium::Driver.new(app, @browser)
   end
   
-  else 
+else 
   #  default driver if not specified
   Capybara.register_driver :used_driver do |app|
     Capybara::Selenium::Driver.new(app, :browser => :firefox)
@@ -208,11 +218,11 @@ end
 Capybara.current_driver = :used_driver
 
 ```
-In order to make the test drivers works, use SauceConnect to make it avalaible. to use SauceConnect, you can access the guide [here](https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy)
+In order to make the SauceLabs test drivers works, use SauceConnect to make it avalaible. to use SauceConnect, you can download and access the guide [here](https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy)
 
 ***Keep in mind*** that we should leave the `ENV['IDIFF_DRIVER']` as it is. You can add 
 more test drivers by adding another `when` case in the code. After setting up the drivers, 
-dont forget to require it in `spec_helper.rb` or `rails_helper.rb`. Example is written below.
+dont forget to require it in `spec_helper.rb` or `rails_helper.rb`. Example code is written below.
 
 ```rb
 require_relative '../spec/supports/capybara_driver'
