@@ -343,3 +343,51 @@ from the code presented. I execute this command to run the code above.
 ```rb
 rake idiff_bundle
 ```
+
+
+### Slack Notification
+
+To configure Slack Notification, simply add 3 more setup variables in `IntegrationDiff.configure`. That is `project_id`, `slack_webhook_address`, and `slack_channel_name`  .Example code are presented below. 
+
+```rb
+    IntegrationDiff.configure do |config|
+      # configure domain to which all images have to be uploaded.
+      config.base_uri = "http://diff.codemancers.com"
+
+      # configure project name to which images belong to.
+      config.project_name = "DummyStore"
+
+      # configure api_key required to authorize api access
+      config.api_key = ENV["IDIFF_API_KEY"]
+
+      # configure js driver which is used for taking screenshots.
+      config.javascript_driver = "poltergeist"
+
+      # configure service to mock capturing and uploading screenshots
+      config.enable_service = !!ENV["IDIFF_ENABLE"]
+
+      # configure logger to log messages. optional.
+      config.logger = Rails.logger
+
+      # configure project id for slack notification (optional)
+      config.project_id = '16'
+
+      # configure slack webhook address for slack notification (optional)
+      config.slack_webhook_address = 'https://hooks.slack.com/services/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'
+
+      # configure slack channel for slack notification (optional)
+      config.slack_channel_name = '#integration-diff-bot'
+  end
+```
+
+This Slack Notification are using Incoming Webhook services. For more information check the link over [here](https://api.slack.com/incoming-webhooks). After integration using Incoming Webhook, you can insert your own Slack Webhook address in `config.slack_webhook_address` in the code.
+
+You can also set the channel where you want the message to be delivered. If not declared, the default value for `slack_channel_name` will be `#random`.
+
+`project_id` are obtained from your project page in IntegrationDiff. for example, I'm currently accessing my project page. The browser provided the link below.
+
+```
+http://diff.codemancers.com/projects/16/runs
+```
+
+The number `16` would be the id of my project. And this id have to be instantiated in config in order to enable Slack Notification.
