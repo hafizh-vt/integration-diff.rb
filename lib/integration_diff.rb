@@ -60,6 +60,36 @@ module IntegrationDiff
     @@logger
   end
 
+  # created by @luthfiswees
+  # configure project id (for baseline run id fetching)
+  @@project_id = nil
+  def self.project_id=(new_project_id)
+    @@project_id = new_project_id
+  end
+  def self.project_id
+    @@project_id
+  end
+
+  # created by @luthfiswees
+  # configure slack webhook address (for slack notification)
+  @@slack_webhook_address = nil
+  def self.slack_webhook_address=(new_slack_webhook_address)
+    @@slack_webhook_address = new_slack_webhook_address
+  end
+  def self.slack_webhook_address
+    @@slack_webhook_address
+  end
+
+  # created by @luthfiswees
+  # configure slack channel (for slack notification)
+  @@slack_channel_name = nil
+  def self.slack_channel_name=(new_slack_channel_name)
+    @@slack_channel_name = new_slack_channel_name
+  end
+  def self.slack_channel_name
+    @@slack_channel_name
+  end
+
   # helper to configure above variables.
   def self.configure
     yield(self)

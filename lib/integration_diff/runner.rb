@@ -3,6 +3,7 @@ require 'json'
 require 'integration_diff/run_details'
 require 'integration_diff/uploader'
 require 'integration_diff/utils'
+require 'slack-notifier'
 
 module IntegrationDiff
   class Runner
@@ -66,6 +67,7 @@ module IntegrationDiff
       @uploader.wrapup
 
       complete_run if @run_id
+      send_notification
     rescue StandardError => e
       IntegrationDiff.logger.fatal e.message
       raise e
@@ -95,6 +97,36 @@ module IntegrationDiff
     end
 
     private
+
+    # to fetch current baseline run id
+    def get_baseline_run_id
+      baseline_run_id = nil
+
+      if IntegrationDiff.project_id != nil
+        response = connection.get("#{IntegrationDiff.base_uri}/api/v1/projects/#{IntegrationDiff.project_id}/runs/baseline")
+        baseline_run_id = JSON.parse(response.body)['id']
+      end
+
+      return baseline_run_id
+    end
+
+    # to notify after build finished
+    def send_notification
+      baseline_run_id = get_baseline_run_id
+
+      if baseline_run_id != nil && IntegrationDiff.slack_webhook_address != nil
+        notifier = Slack::Notifier.new IntegrationDiff.slack_webhook_address
+        notifier.username = "MidtransIntegrationDiffNotifier"
+
+        if IntegrationDiff.slack_channel_name != nil
+          notifier.channel = IntegrationDiff.slack_channel_name
+        else
+          notifier.channel = '#random'
+        end
+
+        notifier.ping "[#{IntegrationDiff.project_name}] Your visual regression test build is ready in <a href='#{IntegrationDiff.base_uri}//projects/#{IntegrationDiff.project_id}/run_compare?run1=#{@run_id}&run2=#{baseline_run_id}' >here</a>"
+      end
+    end
 
     # function to give a tag to identifier
     def identify(identifier)
