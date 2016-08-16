@@ -3,6 +3,7 @@ require 'json'
 require 'integration_diff/run_details'
 require 'integration_diff/uploader'
 require 'integration_diff/utils'
+require 'capybara/dsl'
 require 'slack-notifier'
 
 module IntegrationDiff
