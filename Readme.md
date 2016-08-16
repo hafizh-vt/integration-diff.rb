@@ -5,7 +5,7 @@ Currently this supports only RSpec.
 ### Installation
 
 ```rb
-gem 'integration-diff'
+gem 'integration-diff', :git => "https://github.com/luthfiswees/integration-diff.rb.git", branch: "master"
 ```
 
 ### Configuration
@@ -286,6 +286,11 @@ And the last thing to do is to create a rake task in `lib/task/`. Here, I have
 `idiff.rake` in `lib/task/idiff.rake` that contains the code below.
 
 ```rb
+require 'capybara'
+require 'capybara/rspec'
+require 'capybara/poltergeist'
+require 'integration-diff'
+
 array_of_driver = [:firefox, :saucelabs]
 
 task :config_idiff do
@@ -315,17 +320,17 @@ end
 
 task :idiff_bundle => [:config_idiff] do
 
-  include IntegrationDiff::Dsl
+    include IntegrationDiff::Dsl
 
-  # Specify files path where the spec belongs to
-  path = "spec/features/page_renders_spec.rb"
+    # Specify files path where the spec belongs to
+    path = "spec/features/page_renders_spec.rb"
   
-  # Execute rake task
-  IntegrationDiff.start_run
-  array_of_driver.each do |driver|
+    # Execute rake task
+    IntegrationDiff.start_run
+    array_of_driver.each do |driver|
       `IDIFF_RUN_ID=#{IntegrationDiff.get_run_id} IDIFF_DRIVER=#{driver.to_s} rspec #{path}`
     end
-  IntegrationDiff.wrap_run
+    IntegrationDiff.wrap_run
 
 end
 
