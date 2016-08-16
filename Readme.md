@@ -5,7 +5,7 @@ Currently this supports only RSpec.
 ### Installation
 
 ```rb
-gem 'integration-diff'
+gem 'integration-diff', :git => "https://github.com/luthfiswees/integration-diff.rb.git", branch: "master"
 ```
 
 ### Configuration
@@ -220,6 +220,8 @@ Capybara.current_driver = :used_driver
 ```
 In order to make the SauceLabs test drivers works, use SauceConnect to make it avalaible. to use SauceConnect, you can download and access the guide [here](https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy)
 
+Also, if you want to check out which driver is avalaible in SauceLabs service, You can access it's Platform Configurator in [here](https://wiki.saucelabs.com/display/DOCS/Platform+Configurator)
+
 ***Keep in mind*** that we should leave the `ENV['IDIFF_DRIVER']` as it is. You can add 
 more test drivers by adding another `when` case in the code. After setting up the drivers, 
 dont forget to require it in `spec_helper.rb` or `rails_helper.rb`. Example code is written below.
@@ -284,6 +286,11 @@ And the last thing to do is to create a rake task in `lib/task/`. Here, I have
 `idiff.rake` in `lib/task/idiff.rake` that contains the code below.
 
 ```rb
+require 'capybara'
+require 'capybara/rspec'
+require 'capybara/poltergeist'
+require 'integration-diff'
+
 array_of_driver = [:firefox, :saucelabs]
 
 task :config_idiff do
@@ -313,17 +320,17 @@ end
 
 task :idiff_bundle => [:config_idiff] do
 
-  include IntegrationDiff::Dsl
+    include IntegrationDiff::Dsl
 
-  # Specify files path where the spec belongs to
-  path = "spec/features/page_renders_spec.rb"
+    # Specify files path where the spec belongs to
+    path = "spec/features/page_renders_spec.rb"
   
-  # Execute rake task
-  IntegrationDiff.start_run
-  array_of_driver.each do |driver|
+    # Execute rake task
+    IntegrationDiff.start_run
+    array_of_driver.each do |driver|
       `IDIFF_RUN_ID=#{IntegrationDiff.get_run_id} IDIFF_DRIVER=#{driver.to_s} rspec #{path}`
     end
-  IntegrationDiff.wrap_run
+    IntegrationDiff.wrap_run
 
 end
 
